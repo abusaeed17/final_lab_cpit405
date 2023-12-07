@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import './List.css';
+import './bookmarks.css';
 
 const ScriptList = () => {
     const [bookmarks, setBookmarks] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [updateData, setUpdateData] = useState({ id: '', title: '', URL: '' });
-   
-    useEffect(() => {
-        handleSearch(searchTerm)
-    }, [searchTerm]);
-    
+
+    useEffect(() =>{
+        handleSearch();
+    },[]);
+
     const handleSearch = async () => {
         const response = await fetch(`http://localhost:3000/backend/api/searchByTitle.php?searchTerm=${searchTerm}`);
         const data = await response.json();
@@ -23,13 +23,14 @@ const ScriptList = () => {
 
     const handleDelete = async (bookmarkId) => {
         const requestOptions = {
-            method: 'DELETE', // or 'DELETE', if your server supports DELETE with body
+            method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: bookmarkId }),
         };
-        // Call Delete API
+
         await fetch(`http://localhost:3000/backend/api/delete.php`, requestOptions);
-        // After deletion, fetch the updated list of scripts
+
+        // After deletion, manually trigger the search
         handleSearch();
     };
 
@@ -51,19 +52,26 @@ const ScriptList = () => {
         };
 
         await fetch(`http://localhost:3000/backend/api/update.php`, requestOptions);
+
+        // After update, manually trigger the search
         handleSearch();
         setUpdateData({ id: '', title: '', URL: '' });
     };
 
-
     return (
         <div className="script-list-container">
             {/* Search bar */}
-            <input
-                type="text"
-                placeholder="Search by title"
-                onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div>
+                <input
+                    type="text"
+                    placeholder="Search by title"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                <button type="button" onClick={handleSearch}>
+                    Search
+                </button>
+            </div>
 
             {bookmarks.length === 0 ? (
                 <p>No Bookmarks available.</p>
@@ -84,7 +92,6 @@ const ScriptList = () => {
                             Update
                         </button>
 
-                        {/* Update Form */}
                         {updateData.id === bookmark.id && (
                             <form onSubmit={handleUpdateSubmit}>
                                 <label>

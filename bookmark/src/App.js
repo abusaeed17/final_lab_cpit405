@@ -1,7 +1,7 @@
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Home from "./containers/Home";
-import List from "./containers/List";
+import Home from "./components/HomePage";
+import List from "./components/bookmarks";
 
 export default function App() {
   return (
@@ -14,7 +14,7 @@ export default function App() {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to="/List">List</Link>
+                <Link to="/List">Bookmark</Link>
               </li>
             </ul>
           </nav>
